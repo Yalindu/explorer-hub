@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Explorer Hub</title>
+<style>
+:root{--slate:#0f172a;--slate2:#1e293b;--mut:#64748b;--blue:#2563eb;--blue2:#1d4ed8;--green:#10b981;--green2:#059669;--bg:#f8fafc;--line:#e2e8f0;--sh:0 4px 14px rgba(15,23,42,.08)}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--slate);line-height:1.55}
+a{color:var(--blue)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+button,input{font:inherit}
+:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:11px 20px;font-weight:600;cursor:pointer;transition:.15s;text-decoration:none;display:inline-block}
+.btn:hover{background:var(--blue2);transform:translateY(-1px)}
+.btn.g{background:var(--green)}.btn.g:hover{background:var(--green2)}
+.btn.ghost{background:transparent;color:inherit;border:1.5px solid currentColor;opacity:.9}
+.btn.ghost:hover{background:rgba(148,163,184,.18)}
+.btn.sm{padding:7px 14px;font-size:.9rem}
+.btn:disabled{opacity:.6;cursor:wait;transform:none}
+.nav{position:sticky;top:0;z-index:30;background:var(--slate);color:#fff}
+.bar{display:flex;align-items:center;gap:20px;height:60px}
+.brand{font-weight:800;font-size:1.2rem;color:#fff;text-decoration:none}
+#menu{display:flex;gap:18px;margin-left:auto}
+#menu a{color:#cbd5e1;text-decoration:none;font-size:.93rem;padding:6px 2px;border-bottom:2px solid transparent;transition:.15s}
+#menu a:hover{color:#fff;border-color:var(--green)}
+.acts{display:flex;gap:8px;align-items:center}
+#auth{display:flex;gap:8px;align-items:center}
+.badge{display:flex;align-items:center;gap:8px;background:var(--slate2);padding:5px 12px 5px 5px;border-radius:99px;font-size:.88rem;font-weight:600}
+.badge i{width:26px;height:26px;border-radius:50%;background:var(--green);display:grid;place-items:center;font-style:normal;font-weight:800}
+.burger{display:none;background:none;border:0;color:#fff;font-size:1.5rem;cursor:pointer}
+.hero{background:linear-gradient(135deg,var(--slate),#172554);color:#fff;padding:84px 0 76px}
+.hero h1{font-size:clamp(2.1rem,5.5vw,3.6rem);line-height:1.1;max-width:720px;letter-spacing:-.02em}
+.hero p{max-width:560px;color:#cbd5e1;margin:18px 0 28px;font-size:1.1rem}
+.hero .row{display:flex;gap:12px;flex-wrap:wrap}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:.88rem;color:#a7f3d0;margin-bottom:18px}
+.live b{width:9px;height:9px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,.7)}100%{box-shadow:0 0 0 10px rgba(16,185,129,0)}}
+section{padding:68px 0}
+section h2{font-size:1.9rem;letter-spacing:-.01em}
+.sub{color:var(--mut);margin:6px 0 28px;max-width:600px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh);transition:.2s}
+.quiz{max-width:640px;padding:28px}
+.prog{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin:6px 0 20px}
+.prog i{display:block;height:100%;background:var(--green);transition:width .3s}
+.opt{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:13px 16px;margin-top:10px;cursor:pointer;transition:.15s}
+.opt:hover{border-color:var(--blue);background:#eff6ff;transform:translateX(3px)}
+.link{background:none;border:0;color:var(--mut);cursor:pointer;margin-top:16px;text-decoration:underline}
+.res h3{font-size:1.5rem;margin:4px 0}
+.res ul{margin:10px 0 14px 20px}
+.bars div{margin:8px 0;font-size:.9rem}
+.bars span{display:block;height:9px;border-radius:9px;background:var(--line);margin-top:3px;overflow:hidden}
+.bars span i{display:block;height:100%;background:var(--blue);transition:width .6s}
+.bars .top span i{background:var(--green)}
+.tools-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.tools-bar input{flex:1;min-width:200px;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 15px;cursor:pointer;font-weight:600;font-size:.88rem;transition:.15s}
+.chip:hover{border-color:var(--blue)}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.item{padding:20px;display:flex;flex-direction:column;gap:8px}
+.item:hover{transform:translateY(-4px);box-shadow:0 12px 26px rgba(15,23,42,.13)}
+.ico{font-size:2rem}
+.tag{font-size:.78rem;background:#dcfce7;color:#047857;padding:2px 10px;border-radius:99px;font-weight:600;align-self:flex-start}
+.item p{color:var(--mut);font-size:.92rem;flex:1}
+.foot{display:flex;gap:8px;align-items:center}
+.heart{background:#fff;border:1.5px solid var(--line);border-radius:10px;width:42px;height:42px;cursor:pointer;font-size:1.1rem;transition:.15s}
+.heart:hover{border-color:#f43f5e}.heart.on{background:#fff1f2;border-color:#f43f5e;color:#e11d48}
+.empty{grid-column:1/-1;text-align:center;padding:36px;color:var(--mut)}
+.dl .st{font-size:.85rem;font-weight:600;display:flex;gap:6px;align-items:center}
+.dl .st.lock{color:var(--mut)}.dl .st.open{color:var(--green2)}
+details{padding:16px 20px;margin-bottom:12px}
+summary{font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";font-size:1.3rem;color:var(--blue);transition:.2s}
+details[open] summary::after{content:"\2212"}
+details p{margin-top:10px;color:#334155}
+.band{background:var(--slate);color:#fff;border-radius:18px;padding:34px;display:flex;gap:28px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.jar{flex:1;min-width:240px}
+.jar .meter{height:12px;background:var(--slate2);border-radius:9px;overflow:hidden;margin:10px 0 4px}
+.jar .meter i{display:block;height:100%;background:var(--green);transition:width .6s;width:0}
+footer{padding:28px 0 40px;text-align:center;color:var(--mut);font-size:.9rem}
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.modal.open{display:flex}
+.back{position:absolute;inset:0;background:rgba(15,23,42,.65);backdrop-filter:blur(3px)}
+.box{position:relative;background:#fff;border-radius:18px;padding:28px;width:100%;max-width:430px;max-height:92vh;overflow:auto;animation:pop .2s}
+@keyframes pop{from{opacity:0;transform:scale(.95) translateY(8px)}}
+.x{position:absolute;top:12px;right:14px;border:0;background:none;font-size:1.3rem;cursor:pointer;color:var(--mut);width:34px;height:34px;border-radius:50%}
+.x:hover{background:var(--line)}
+.tabs{display:flex;background:var(--bg);border-radius:10px;padding:4px;margin:8px 0 16px}
+.tabs button{flex:1;border:0;background:none;padding:9px;border-radius:8px;font-weight:600;cursor:pointer;color:var(--mut)}
+.tabs button.on{background:#fff;color:var(--slate);box-shadow:var(--sh)}
+label{display:block;font-weight:600;font-size:.88rem;margin:12px 0 5px}
+.box input[type=email],.box input[type=password],.box input[type=number],.box input[type=text]{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px}
+.box input:focus{border-color:var(--blue);outline:0}
+.err{color:#dc2626;font-size:.88rem;min-height:1.3em;margin-top:8px}
+.note{background:#eff6ff;color:var(--blue2);padding:9px 12px;border-radius:10px;font-size:.9rem;margin-bottom:6px}
+.note:empty{display:none}
+.full{width:100%;margin-top:10px}
+.amts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.amts button{padding:13px 0;border:1.5px solid var(--line);background:#fff;border-radius:10px;font-weight:700;cursor:pointer;transition:.15s}
+.amts button:hover{border-color:var(--green)}
+.amts button.on{background:var(--green);border-color:var(--green);color:#fff}
+.ok{text-align:center;padding:12px 0}.ok .big{font-size:3.2rem}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,90px);background:var(--slate);color:#fff;padding:12px 20px;border-radius:12px;z-index:90;transition:.3s;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:90vw}
+.toast.show{transform:translate(-50%,0)}
+@media(max-width:820px){
+.burger{display:block}
+#menu{display:none;position:absolute;top:60px;left:0;right:0;background:var(--slate);flex-direction:column;padding:12px 20px 18px;gap:6px}
+#menu.open{display:flex}
+.badge span{display:none}.badge{padding:5px}
+section{padding:52px 0}.hero{padding:60px 0}
+}
+[hidden]{display:none!important}
+.box.auth{max-width:880px;padding:0;display:grid;grid-template-columns:1fr 1.15fr;overflow:hidden}
+.aside{background:linear-gradient(150deg,#1d4ed8,#0f172a 55%,#047857);color:#fff;padding:36px 32px;display:flex;flex-direction:column;gap:14px;min-height:540px}
+.aside .logo{font-weight:800}
+.aside h3{font-size:2rem;line-height:1.15;letter-spacing:-.02em;margin-top:18px}
+.aside p{color:#cbd5e1}
+.art{position:relative;flex:1;min-height:150px}
+.art i{position:absolute;border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.3);animation:fl 6s ease-in-out infinite}
+.art i:nth-child(1){width:120px;height:150px;left:4%;bottom:4%;background:linear-gradient(160deg,#60a5fa,#2563eb);transform:rotate(-8deg)}
+.art i:nth-child(2){width:130px;height:100px;left:36%;bottom:26%;background:linear-gradient(160deg,#6ee7b7,#10b981);transform:rotate(6deg);animation-delay:-2s}
+.art i:nth-child(3){width:86px;height:86px;right:4%;bottom:6%;background:#fff;border-radius:50%;opacity:.9;animation-delay:-4s}
+@keyframes fl{50%{translate:0 -10px}}
+.pane{padding:36px 34px;position:relative}
+.pane h4{font-size:1.5rem;letter-spacing:-.01em;margin-bottom:10px}
+.sub2{color:var(--mut);font-size:.93rem;margin-bottom:6px}
+.soc{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-weight:600;cursor:pointer;margin-top:10px;transition:.15s;color:var(--slate)}
+.soc:hover{border-color:var(--slate);box-shadow:var(--sh);transform:translateY(-1px)}
+.soc.apple{background:#000;border-color:#000;color:#fff}.soc.apple:hover{background:#1f2937}
+.soc svg{width:20px;height:20px}
+.or{display:flex;align-items:center;gap:12px;color:var(--mut);font-size:.82rem;margin:18px 0 2px}
+.or::before,.or::after{content:"";flex:1;height:1px;background:var(--line)}
+.fl{position:relative;margin-top:14px}
+.box.auth .fl input{height:54px;padding:22px 14px 6px;border-radius:12px;border:1.5px solid var(--line);transition:.15s}
+.box.auth .fl input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(37,99,235,.12)}
+.fl label{position:absolute;left:15px;top:16px;margin:0;font-weight:500;color:var(--mut);transition:.15s;pointer-events:none}
+.fl input:focus+label,.fl input:not(:placeholder-shown)+label{top:7px;font-size:.74rem;color:var(--blue)}
+.fl.ok input{border-color:var(--green)!important}.fl.bad input{border-color:#dc2626!important}
+.fl.bad label{color:#dc2626}
+.msg{display:block;font-size:.78rem;color:#dc2626;margin:4px 3px 0}.msg:empty{display:none}
+.eye{position:absolute;right:10px;top:15px;background:none;border:0;color:var(--blue);font-weight:600;font-size:.82rem;cursor:pointer}
+.link2{background:none;border:0;color:var(--blue);font-weight:600;cursor:pointer;padding:0}
+.link2:hover{text-decoration:underline}
+#forgot{display:block;margin:10px 0 0 auto;font-size:.88rem}
+.swap{text-align:center;margin-top:18px;color:var(--mut);font-size:.92rem}
+.auth .btn.full{position:relative;margin-top:14px;min-height:46px}
+.spin{width:18px;height:18px;border:3px solid rgba(255,255,255,.45);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
+.btn .spin{display:none;position:absolute;left:50%;top:50%;margin:-9px 0 0 -9px}
+.btn.load .spin{display:block}.btn.load .lbl{opacity:0}
+.spin.dark{border-color:var(--line);border-top-color:var(--blue)}
+@keyframes sp{to{transform:rotate(360deg)}}
+.pop{position:absolute;inset:0;background:rgba(15,23,42,.55);display:grid;place-items:center;z-index:5;padding:16px;animation:pop .2s}
+.popbox{background:#fff;border-radius:14px;width:100%;max-width:340px;box-shadow:0 20px 50px rgba(0,0,0,.4);overflow:hidden;text-align:center}
+.pbar{background:var(--bg);border-bottom:1px solid var(--line);padding:8px 12px;font-size:.78rem;color:var(--mut)}
+.pbody{padding:22px 22px 16px}.pbody svg{width:34px;height:34px}
+.pbody h5{font-size:1.1rem;margin:10px 0 4px}.pbody p{color:var(--mut);font-size:.88rem;margin-bottom:14px}
+.acct{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;cursor:pointer;margin-bottom:8px}
+.acct:hover{border-color:var(--blue);background:#eff6ff}
+.acct i{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;font-style:normal;font-weight:700}
+.acct small{display:block;color:var(--mut)}
+.pload{display:flex;gap:10px;align-items:center;justify-content:center;padding:14px;color:var(--mut);margin-bottom:8px}
+.wel{text-align:center;padding-top:14px}
+.wav{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--green));color:#fff;display:grid;place-items:center;font-size:2rem;font-weight:800;margin:0 auto 14px;animation:pop .4s}
+.wel .mail{font-weight:600;margin-bottom:4px;word-break:break-all}
+.qk{display:grid;gap:8px;margin-top:16px}
+.qk a{display:block;padding:11px;border:1.5px solid var(--line);border-radius:12px;color:var(--slate);text-decoration:none;font-weight:600;transition:.15s}
+.qk a:hover{border-color:var(--blue);background:#eff6ff}
+@media(max-width:760px){.box.auth{grid-template-columns:1fr}.aside{min-height:0;padding:22px 24px;gap:6px}.aside h3{font-size:1.4rem;margin-top:2px}.aside p,.art{display:none}.pane{padding:24px 22px 28px}.box.auth .x{color:#fff;z-index:6}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body id="top">
+
+<header class="nav"><div class="wrap bar">
+  <a class="brand" href="#top">🧭 Explorer Hub</a>
+  <nav id="menu">
+    <a href="#quiz">Interactive Quiz</a><a href="#tools">Tool Finder</a><a href="#downloads">Free Downloads</a><a href="#monetize">Monetization Guide</a>
+  </nav>
+  <div class="acts"><button class="btn ghost sm" id="tipBtn">☕ Tip</button><div id="auth"></div><button class="burger" id="burger" aria-label="Toggle menu">☰</button></div>
+</div></header>
+
+<div class="hero"><div class="wrap">
+  <div class="live"><b></b>Free to explore. Sign in to save and download.</div>
+  <h1>Find the tools, templates and ideas to build something of your own.</h1>
+  <p>Take a 3-question quiz, browse hand-picked tools, grab free assets and learn how websites earn money.</p>
+  <div class="row"><a class="btn g" href="#quiz">Take the quiz</a><a class="btn ghost" href="#tools">Browse tools</a></div>
+</div></div>
+
+<section id="quiz"><div class="wrap">
+  <h2>Which website should you build?</h2>
+  <p class="sub">Three quick questions. You get a setup that fits how you like to work.</p>
+  <div class="card quiz" id="quizBox"></div>
+</div></section>
+
+<section id="tools" style="background:#fff"><div class="wrap">
+  <h2>Tool finder</h2>
+  <p class="sub">Search by name or filter by category. Sign in to save favorites.</p>
+  <div class="tools-bar">
+    <input type="search" id="q" placeholder="Search tools…" aria-label="Search tools">
+    <div class="chips" id="chips"></div>
+  </div>
+  <p class="sub" id="count" style="margin:0 0 14px"></p>
+  <div class="grid" id="toolGrid"></div>
+</div></section>
+
+<section id="downloads"><div class="wrap">
+  <h2>Free downloads</h2>
+  <p class="sub">Printable planners, wallpapers and study sheets. Free with an account.</p>
+  <div class="grid" id="dlGrid"></div>
+</div></section>
+
+<section id="monetize" style="background:#fff"><div class="wrap">
+  <h2>Monetization guide</h2>
+  <p class="sub">Four proven ways a website can earn. Tap each one to expand.</p>
+  <div style="max-width:720px">
+    <details class="card" open><summary>Affiliate links</summary><p>Recommend products you actually use and earn a commission when readers buy. Start with one or two programs (Amazon Associates, or the affiliate page of your favorite software). Be open about the link, and write honest reviews so readers trust you.</p></details>
+    <details class="card"><summary>Display ads</summary><p>Ad networks pay per thousand views. Income is small until you have steady traffic, so treat ads as a later layer. Most networks want a few months of original content and a few thousand monthly visits first.</p></details>
+    <details class="card"><summary>Digital products</summary><p>Templates, planners, guides and presets cost nothing to ship and keep every sale. Start with a free sample (like the ones above) to build an email list, then offer a paid version.</p></details>
+    <details class="card"><summary>Tips and memberships</summary><p>A tip jar lets readers say thanks with no commitment. Memberships go further: a small monthly fee for extra content or early access. Both work best when you already have a loyal audience.</p></details>
+  </div>
+</div></section>
+
+<section><div class="wrap"><div class="band">
+  <div><h2>Enjoying Explorer Hub?</h2><p style="color:#cbd5e1;margin:6px 0 16px">Help keep the free tools coming.</p><button class="btn g" id="tipBtn2">☕ Buy me a coffee</button></div>
+  <div class="jar"><b>Supporter jar</b><div class="meter"><i id="jarBar"></i></div><small id="jarTxt" style="color:#94a3b8"></small></div>
+</div></div></section>
+
+<footer><div class="wrap">Explorer Hub. Accounts and tips are simulated and stored only in your browser.</div></footer>
+
+<!-- Auth modal -->
+<div class="modal" id="mAuth"><div class="back" data-close></div>
+<div class="box auth" role="dialog" aria-modal="true" aria-label="Sign in or create an account">
+  <button class="x" data-close aria-label="Close">✕</button>
+  <aside class="aside">
+    <div class="logo">🧭 Explorer Hub</div>
+    <h3 id="asH">What will you explore today?</h3>
+    <p>Save favorite tools, unlock free downloads and plan your first website.</p>
+    <div class="art" aria-hidden="true"><i></i><i></i><i></i></div>
+  </aside>
+  <div class="pane">
+    <div class="view" id="vForm">
+      <h4 id="fTitle">Welcome back</h4>
+      <p class="note" id="authNote"></p>
+      <button class="soc" type="button" data-soc="Google"><svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>Continue with Google</button>
+      <button class="soc apple" type="button" data-soc="Apple"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>Continue with Apple</button>
+      <div class="or">OR</div>
+      <form id="aForm" novalidate>
+        <div class="fl"><input id="aE" type="email" placeholder=" " autocomplete="email"><label for="aE">Email</label><small class="msg" id="eMsg"></small></div>
+        <div class="fl"><input id="aP" type="password" placeholder=" " autocomplete="current-password" style="padding-right:64px"><label for="aP">Password</label><button class="eye" id="eye" type="button">Show</button><small class="msg" id="pMsg"></small></div>
+        <button class="link2" id="forgot" type="button">Forgot password?</button>
+        <p class="err" id="aErr" role="alert"></p>
+        <button class="btn full" id="aGo" type="submit"><span class="lbl">Continue with Email</span><b class="spin"></b></button>
+      </form>
+      <p class="swap"><span id="swTxt">New to Explorer Hub?</span> <button class="link2" id="swap" type="button">Create an account</button></p>
+    </div>
+    <div class="view" id="vForgot" hidden>
+      <button class="link2" type="button" data-backin>← Back to sign in</button>
+      <h4 style="margin-top:14px">Reset your password</h4>
+      <p class="sub2">Enter your account email and we'll send a reset link.</p>
+      <form id="fgForm" novalidate>
+        <div class="fl"><input id="fE" type="email" placeholder=" " autocomplete="email"><label for="fE">Email</label><small class="msg" id="fEMsg"></small></div>
+        <p class="err" id="fgErr" role="alert"></p>
+        <button class="btn full" id="fgGo" type="submit"><span class="lbl">Send reset link</span><b class="spin"></b></button>
+      </form>
+      <form id="rsForm" novalidate hidden>
+        <p class="note">Demo: a real app would email you a link. Set your new password here.</p>
+        <div class="fl"><input id="nP" type="password" placeholder=" " autocomplete="new-password"><label for="nP">New password</label><small class="msg" id="nPMsg"></small></div>
+        <button class="btn g full" id="rsGo" type="submit"><span class="lbl">Save new password</span><b class="spin"></b></button>
+      </form>
+    </div>
+    <div class="view wel" id="vWelcome" hidden>
+      <div class="wav" id="wAv">E</div><h4>Welcome, Explorer!</h4>
+      <p class="mail" id="wMail"></p><p class="sub2" id="wSub"></p>
+      <button class="btn g full" id="wGo" data-close>Start exploring</button>
+      <div class="qk"><a href="#quiz" data-close>🧭 Take the quiz</a><a href="#tools" data-close>🛠️ Browse tools</a><a href="#downloads" data-close>🎁 Free downloads</a></div>
+    </div>
+    <div class="pop" id="oauth" hidden><div class="popbox" role="dialog" aria-label="Social sign in">
+      <div class="pbar" id="pHost"></div>
+      <div class="pbody"><div id="pLogo"></div><h5 id="pTitle"></h5><p>Choose an account to continue to Explorer Hub</p>
+        <button class="acct" id="pAcct" type="button" hidden><i>E</i><span><b>Explorer</b><small id="pMail"></small></span></button>
+        <div class="pload" id="pLoad"><b class="spin dark"></b><span id="pLoadTxt"></span></div>
+        <button class="link2" id="pCancel" type="button">Cancel</button></div>
+    </div></div>
+  </div>
+</div></div>
+
+<!-- Tool modal -->
+<div class="modal" id="mTool"><div class="back" data-close></div><div class="box" role="dialog" aria-modal="true" aria-label="Tool details">
+  <button class="x" data-close aria-label="Close">✕</button><div id="toolBody"></div>
+</div></div>
+
+<!-- Tip modal -->
+<div class="modal" id="mTip"><div class="back" data-close></div><div class="box" role="dialog" aria-modal="true" aria-label="Tip jar">
+  <button class="x" data-close aria-label="Close">✕</button>
+  <div id="tipForm">
+    <h3 style="font-size:1.4rem">☕ Buy me a coffee</h3>
+    <p style="color:var(--mut)">Pick an amount or enter your own.</p>
+    <div class="amts" id="amts"><button data-amt="3">$3</button><button data-amt="5" class="on">$5</button><button data-amt="10">$10</button></div>
+    <label for="tipC">Custom amount (USD)</label><input type="number" id="tipC" min="1" max="500" step="1" placeholder="e.g. 7">
+    <label for="tipM">Message (optional)</label><input type="text" id="tipM" maxlength="80" placeholder="Thanks for the tools!">
+    <p class="err" id="tipErr" role="alert"></p>
+    <button class="btn g full" id="tipGo">Send $5</button>
+  </div>
+  <div class="ok" id="tipOk" hidden>
+    <div class="big">🎉</div><h3 style="font-size:1.4rem">Thank you!</h3>
+    <p id="tipOkTxt" style="color:var(--mut);margin:6px 0 16px"></p><button class="btn full" data-close>Done</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- storage (falls back to memory if localStorage is blocked) ---------- */
+const mem={};
+const lsGet=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return k in mem?mem[k]:d}};
+const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){mem[k]=v}};
+
+/* ---------- toast + modals ---------- */
+let tt;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2600)}
+function openM(id){$("#"+id).classList.add("open");document.body.style.overflow="hidden"}
+function closeM(){$$(".modal.open").forEach(m=>m.classList.remove("open"));document.body.style.overflow=""}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeM()});
+
+/* ---------- auth ---------- */
+let user=lsGet("eh_session",null), pending=null, mode="in", busy=false, tok=0, rsMail="";
+const EMAIL=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const hash=s=>{let h=5381;for(const c of s)h=((h<<5)+h+c.charCodeAt(0))>>>0;return String(h)};
+const users=()=>lsGet("eh_users",{});
+function renderAuth(){
+  $("#auth").innerHTML=user
+    ?`<span class="badge" title="${esc(user)}"><i>${esc(user[0].toUpperCase())}</i><span>Welcome, Explorer!</span></span><button class="btn ghost sm" data-logout>Log out</button>`
+    :`<button class="btn ghost sm" data-auth="in">Sign In</button><button class="btn sm" data-auth="up">Sign Up</button>`;
+  renderTools();renderDL();
+}
+const view=v=>["vForm","vForgot","vWelcome"].forEach(id=>{$("#"+id).hidden=id!==v});
+function setLoad(b,on){b.classList.toggle("load",on);b.disabled=on;busy=on}
+function check(inp,msg,kind,force){
+  const v=inp.value,fl=inp.closest(".fl");let m="";
+  if(kind==="email"){if(!v.trim())m=force?"Enter your email address.":"";else if(!EMAIL.test(v.trim()))m="Enter a valid email, like you@example.com."}
+  else if(kind==="new"){if(v.length<6)m=(v||force)?"Use at least 6 characters.":""}
+  else if(!v&&force)m="Enter your password.";
+  msg.textContent=m;fl.classList.toggle("bad",!!m);fl.classList.toggle("ok",!m&&!!v);
+  return !m&&!!v;
+}
+const pk=()=>mode==="up"?"new":"cur";
+function setMode(m){
+  mode=m;const up=m==="up";
+  $("#asH").textContent=up?"Start building for free":"What will you explore today?";
+  $("#fTitle").textContent=up?"Create your free account":"Welcome back";
+  $("#swTxt").textContent=up?"Already have an account?":"New to Explorer Hub?";
+  $("#swap").textContent=up?"Sign in":"Create an account";
+  $("#forgot").hidden=up;
+  $("#aP").setAttribute("autocomplete",up?"new-password":"current-password");
+  ["aE","aP"].forEach(id=>{const i=$("#"+id);i.value="";i.closest(".fl").classList.remove("ok","bad")});
+  $("#eMsg").textContent=$("#pMsg").textContent=$("#aErr").textContent="";
+}
+function showAuth(tab,note){
+  tok++;busy=false;$("#oauth").hidden=true;view("vForm");setMode(tab==="up"?"up":"in");
+  $("#authNote").textContent=note||"";openM("mAuth");setTimeout(()=>$("#aE").focus(),50);
+}
+function needAuth(fn,note){
+  if(user){fn();return}
+  pending=fn;showAuth("in",note||"Sign in to use this feature.");
+}
+function loggedIn(email,via){
+  const all=users();
+  if(!all[email]){all[email]={pw:"",favs:[],via:via||"email"};lsSet("eh_users",all)}
+  user=email;lsSet("eh_session",email);renderAuth();$("#oauth").hidden=true;
+  $("#wAv").textContent=email[0].toUpperCase();$("#wMail").textContent=email;
+  $("#wSub").textContent=pending?"You're signed in. Continue where you left off.":"Your account is ready. Follow your curiosity.";
+  $("#wGo").textContent=pending?"Continue":"Start exploring";
+  view("vWelcome");
+}
+$("#aE").addEventListener("input",()=>check($("#aE"),$("#eMsg"),"email"));
+$("#aP").addEventListener("input",()=>check($("#aP"),$("#pMsg"),pk()));
+$("#eye").addEventListener("click",()=>{const p=$("#aP"),h=p.type==="password";p.type=h?"text":"password";$("#eye").textContent=h?"Hide":"Show"});
+$("#swap").addEventListener("click",()=>{$("#authNote").textContent="";setMode(mode==="in"?"up":"in")});
+$("#aForm").addEventListener("submit",e=>{
+  e.preventDefault();if(busy)return;
+  const a=check($("#aE"),$("#eMsg"),"email",true),b=check($("#aP"),$("#pMsg"),pk(),true);
+  $("#aErr").textContent="";if(!a||!b)return;
+  const em=$("#aE").value.trim().toLowerCase(),pw=$("#aP").value,btn=$("#aGo");
+  setLoad(btn,true);
+  setTimeout(()=>{
+    setLoad(btn,false);const all=users(),u=all[em];
+    if(mode==="in"){
+      if(!u||u.pw!==hash(pw)){$("#aErr").textContent=u&&!u.pw?"This account uses Google or Apple sign-in. Use the buttons above.":"Email or password is incorrect. New here? Create an account.";return}
+    }else{
+      if(u){$("#aErr").textContent="That email already has an account. Try signing in.";return}
+      all[em]={pw:hash(pw),favs:[]};lsSet("eh_users",all);
+    }
+    $("#aP").value="";loggedIn(em);
+  },900);
+});
+/* forgot password */
+$("#forgot").addEventListener("click",()=>{
+  const v=$("#aE").value;view("vForgot");$("#fgForm").hidden=false;$("#rsForm").hidden=true;
+  $("#fE").value=v;$("#fgErr").textContent="";check($("#fE"),$("#fEMsg"),"email");$("#fE").focus();
+});
+$("#fE").addEventListener("input",()=>check($("#fE"),$("#fEMsg"),"email"));
+$("#nP").addEventListener("input",()=>check($("#nP"),$("#nPMsg"),"new"));
+$("#fgForm").addEventListener("submit",e=>{
+  e.preventDefault();if(busy)return;
+  if(!check($("#fE"),$("#fEMsg"),"email",true))return;
+  const em=$("#fE").value.trim().toLowerCase(),btn=$("#fgGo");setLoad(btn,true);
+  setTimeout(()=>{
+    setLoad(btn,false);
+    if(!users()[em]){$("#fgErr").textContent="No account found for that email.";return}
+    $("#fgErr").textContent="";rsMail=em;$("#fgForm").hidden=true;$("#rsForm").hidden=false;$("#nP").value="";$("#nP").focus();toast("Reset link sent (simulated).");
+  },900);
+});
+$("#rsForm").addEventListener("submit",e=>{
+  e.preventDefault();if(busy)return;
+  if(!check($("#nP"),$("#nPMsg"),"new",true))return;
+  const btn=$("#rsGo");setLoad(btn,true);
+  setTimeout(()=>{
+    const all=users();all[rsMail].pw=hash($("#nP").value);lsSet("eh_users",all);
+    setLoad(btn,false);showAuth("in","Password updated. Sign in with your new password.");
+    $("#aE").value=rsMail;check($("#aE"),$("#eMsg"),"email");
+  },900);
+});
+/* simulated Google / Apple OAuth popup */
+const PROV={Google:{mail:"explorer@gmail.com",host:"🔒 accounts.google.com"},Apple:{mail:"explorer@icloud.com",host:"🔒 appleid.apple.com"}};
+let prov="";
+$$("[data-soc]").forEach(b=>b.addEventListener("click",()=>{
+  if(busy)return;prov=b.dataset.soc;const t=++tok;
+  $("#pLogo").innerHTML=b.querySelector("svg").outerHTML;$("#pTitle").textContent="Sign in with "+prov;
+  $("#pHost").textContent=PROV[prov].host;$("#pMail").textContent=PROV[prov].mail;
+  $("#pAcct").hidden=true;$("#pLoad").hidden=false;$("#pLoadTxt").textContent="Connecting to "+prov+"…";
+  $("#oauth").hidden=false;
+  setTimeout(()=>{if(t!==tok)return;$("#pLoad").hidden=true;$("#pAcct").hidden=false;$("#pAcct").focus()},1000);
+}));
+$("#pAcct").addEventListener("click",()=>{
+  const t=++tok,p=prov;$("#pAcct").hidden=true;$("#pLoad").hidden=false;$("#pLoadTxt").textContent="Signing in…";
+  setTimeout(()=>{if(t!==tok)return;loggedIn(PROV[p].mail,p.toLowerCase())},1100);
+});
+$("#pCancel").addEventListener("click",()=>{tok++;$("#oauth").hidden=true});
+
+/* ---------- tools ---------- */
+const TOOLS=[
+{id:1,n:"Excalidraw",c:"Creative",i:"✏️",d:"A virtual whiteboard for hand-drawn style diagrams.",l:"Sketch flows, wireframes and ideas in seconds. Free, runs in the browser and exports to PNG or SVG.",b:"Quick diagrams and brainstorms",u:"https://excalidraw.com"},
+{id:2,n:"Perplexity",c:"AI",i:"🔎",d:"An AI search engine that answers with sources.",l:"Ask a question and get a short answer with linked sources, so you can check the facts yourself.",b:"Research and fact-finding",u:"https://www.perplexity.ai"},
+{id:3,n:"Hugging Face",c:"AI",i:"🤗",d:"Try thousands of open AI models and demos.",l:"A community hub where you can test models for text, images and audio, often right in the browser.",b:"Exploring what AI can do",u:"https://huggingface.co"},
+{id:4,n:"Coolors",c:"Creative",i:"🎨",d:"Generate color palettes with one key press.",l:"Press the spacebar to create new palettes, lock the colors you like and export them for your design.",b:"Picking brand colors",u:"https://coolors.co"},
+{id:5,n:"Notion",c:"Productivity",i:"📓",d:"Notes, docs and databases in one workspace.",l:"Build a personal wiki, project tracker or content calendar. Plenty of free templates to start from.",b:"Planning and organizing",u:"https://www.notion.so"},
+{id:6,n:"Photopea",c:"Creative",i:"🖼️",d:"A free Photoshop-style editor in your browser.",l:"Opens PSD, XCF and Sketch files. Layers, masks and filters with nothing to install.",b:"Photo editing on any device",u:"https://www.photopea.com"},
+{id:7,n:"Regex101",c:"Tech",i:"🧩",d:"Test and explain regular expressions live.",l:"Paste a pattern and sample text and see each match highlighted with a plain-English explanation.",b:"Debugging text patterns",u:"https://regex101.com"},
+{id:8,n:"GitHub Pages",c:"Tech",i:"🚀",d:"Host a static website for free.",l:"Push your HTML files to a repository and get a live site. Great for portfolios and project pages.",b:"Publishing your first site",u:"https://pages.github.com"},
+{id:9,n:"Obsidian",c:"Productivity",i:"🧠",d:"A private note app that links your ideas.",l:"Notes are plain Markdown files on your device. Link them together to see how your ideas connect.",b:"Building a second brain",u:"https://obsidian.md"},
+{id:10,n:"Todoist",c:"Productivity",i:"✅",d:"A clean to-do list that stays out of the way.",l:"Type tasks in plain language like 'call mum every Friday' and it sets the schedule for you.",b:"Daily task management",u:"https://todoist.com"},
+{id:11,n:"Canva",c:"Creative",i:"🧵",d:"Drag-and-drop design for posts, slides and posters.",l:"Thousands of templates for social posts, planners and presentations. The free plan covers most needs.",b:"Non-designers making graphics",u:"https://www.canva.com"},
+{id:12,n:"Replit",c:"Tech",i:"💻",d:"Write and run code in your browser.",l:"Start a project in almost any language with no setup, then share a link so others can run it.",b:"Learning to code",u:"https://replit.com"}
+];
+const CATS=["All","Tech","AI","Creative","Productivity","★ Saved"];
+let cat="All",qry="";
+const favs=()=>user?(users()[user]?.favs||[]):[];
+function renderChips(){
+  $("#chips").innerHTML=CATS.map(c=>`<button class="chip${c===cat?" on":""}" data-cat="${c}">${c}</button>`).join("");
+}
+function renderTools(){
+  renderChips();
+  const f=favs();
+  const list=TOOLS.filter(t=>(cat==="All"||(cat==="★ Saved"?f.includes(t.id):t.c===cat))&&(t.n+" "+t.d+" "+t.c).toLowerCase().includes(qry));
+  $("#count").textContent=`${list.length} tool${list.length===1?"":"s"}`+(cat!=="All"?` in ${cat}`:"");
+  $("#toolGrid").innerHTML=list.length?list.map(t=>`
+    <article class="card item"><div class="ico">${t.i}</div><span class="tag">${t.c}</span><h3>${t.n}</h3><p>${t.d}</p>
+    <div class="foot"><button class="btn sm" style="flex:1" data-det="${t.id}">Details</button>
+    <button class="heart${f.includes(t.id)?" on":""}" data-fav="${t.id}" aria-label="Save ${t.n}" aria-pressed="${f.includes(t.id)}">${f.includes(t.id)?"♥":"♡"}</button></div></article>`).join("")
+    :`<div class="empty">${cat==="★ Saved"?(user?"No saved tools yet. Tap the heart on a tool to save it.":"Sign in to see your saved tools."):"No tools match that search. Try another word or category."}</div>`;
+}
+function toggleFav(id){
+  needAuth(()=>{
+    const all=users(),u=all[user];if(!u)return;
+    u.favs=u.favs||[];const i=u.favs.indexOf(id);
+    i<0?u.favs.push(id):u.favs.splice(i,1);
+    lsSet("eh_users",all);renderTools();
+    if($("#mTool").classList.contains("open"))openTool(id);
+    toast(i<0?"Saved to your favorites.":"Removed from favorites.");
+  },"Sign in to save your favorite tools.");
+}
+function openTool(id){
+  const t=TOOLS.find(x=>x.id===id),s=favs().includes(id);
+  $("#toolBody").innerHTML=`<div class="ico">${t.i}</div><h3 style="font-size:1.5rem;margin:4px 0">${t.n}</h3><span class="tag">${t.c}</span>
+  <p style="margin:14px 0">${t.l}</p><p style="color:var(--mut);margin-bottom:18px"><b>Best for:</b> ${t.b}</p>
+  <div class="foot"><a class="btn g" style="flex:1;text-align:center" href="${t.u}" target="_blank" rel="noopener noreferrer">Visit ${t.n}</a>
+  <button class="heart${s?" on":""}" data-fav="${t.id}" aria-label="Save ${t.n}">${s?"♥":"♡"}</button></div>`;
+  openM("mTool");
+}
+$("#q").addEventListener("input",e=>{qry=e.target.value.trim().toLowerCase();renderTools()});
+
+/* ---------- downloads ---------- */
+function pdf(title,lines){
+  const e=s=>s.replace(/[\\()]/g,"\\$&");
+  let c="BT /F1 22 Tf 50 780 Td ("+e(title)+") Tj /F1 12 Tf 0 -34 Td 18 TL ";
+  lines.forEach(l=>c+="("+e(l)+") Tj T* ");c+="ET";
+  const o=["<</Type/Catalog/Pages 2 0 R>>","<</Type/Pages/Kids[3 0 R]/Count 1>>","<</Type/Page/Parent 2 0 R/MediaBox[0 0 595 842]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>>>>>","<</Length "+c.length+">>\nstream\n"+c+"\nendstream","<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>"];
+  let p="%PDF-1.4\n";const off=[];
+  o.forEach((x,i)=>{off.push(p.length);p+=(i+1)+" 0 obj\n"+x+"\nendobj\n"});
+  const xr=p.length;
+  p+="xref\n0 "+(o.length+1)+"\n0000000000 65535 f \n"+off.map(n=>String(n).padStart(10,"0")+" 00000 n \n").join("")+"trailer\n<</Size "+(o.length+1)+"/Root 1 0 R>>\nstartxref\n"+xr+"\n%%EOF";
+  return new Blob([p],{type:"application/pdf"});
+}
+function save(blob,name){
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+const DL=[
+{id:"planner",i:"📅",t:"Weekly Planner",d:"A printable week-at-a-glance planner with goals and priorities.",f:"PDF",
+ mk:()=>[pdf("Weekly Planner",["Week of: ______________","","Top 3 goals:","1. ______________________________","2. ______________________________","3. ______________________________","","Monday     ______________________________","Tuesday    ______________________________","Wednesday  ______________________________","Thursday   ______________________________","Friday     ______________________________","Weekend    ______________________________","","Wins this week: ______________________"]),"weekly-planner.pdf"]},
+{id:"study",i:"📚",t:"Study Cheat Sheet",d:"Four proven study methods on a single page.",f:"PDF",
+ mk:()=>[pdf("Study Cheat Sheet",["1. Pomodoro: study 25 min, rest 5 min. After 4 rounds, rest 20 min.","2. Active recall: close the book and write what you remember.","3. Spaced repetition: review after 1, 3, 7, 14 and 30 days.","4. Feynman method: explain the topic simply, then fill the gaps.","","Before you start: phone away, water nearby, one clear goal."]),"study-cheat-sheet.pdf"]},
+{id:"habit",i:"🌱",t:"30-Day Habit Tracker",d:"Track one habit for a month and watch the streak grow.",f:"PDF",
+ mk:()=>[pdf("30-Day Habit Tracker",["Habit: ______________________________","Start date: ______________","","Days 1-10:   [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]","Days 11-20:  [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]","Days 21-30:  [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ] [ ]","","Reward at day 30: ______________________"]),"habit-tracker.pdf"]},
+{id:"wall",i:"📱",t:"Phone Wallpaper",d:"A calm gradient wallpaper sized for modern phones.",f:"PNG",async:true}
+];
+function renderDL(){
+  $("#dlGrid").innerHTML=DL.map(d=>`<article class="card item dl"><div class="ico">${d.i}</div><span class="tag">${d.f}</span><h3>${d.t}</h3><p>${d.d}</p>
+  <div class="st ${user?"open":"lock"}">${user?"🔓 Unlocked":"🔒 Sign in to unlock"}</div>
+  <button class="btn ${user?"g":""}" data-dl="${d.id}">${user?"Download":"Sign in to download"}</button></article>`).join("");
+}
+function wallpaper(){
+  const c=document.createElement("canvas");c.width=1080;c.height=1920;const x=c.getContext("2d");
+  const g=x.createLinearGradient(0,0,1080,1920);g.addColorStop(0,"#0f172a");g.addColorStop(.55,"#2563eb");g.addColorStop(1,"#10b981");
+  x.fillStyle=g;x.fillRect(0,0,1080,1920);
+  x.fillStyle="rgba(255,255,255,.08)";x.beginPath();x.arc(850,420,300,0,7);x.fill();x.beginPath();x.arc(200,1500,380,0,7);x.fill();
+  x.fillStyle="#fff";x.textAlign="center";x.font="bold 92px sans-serif";x.fillText("Stay curious.",540,1000);
+  x.font="40px sans-serif";x.fillStyle="rgba(255,255,255,.75)";x.fillText("Explorer Hub",540,1070);
+  c.toBlob(b=>{b?save(b,"explorer-wallpaper.png"):toast("Your browser couldn't create the image.")},"image/png");
+}
+function download(id){
+  needAuth(()=>{
+    const d=DL.find(x=>x.id===id);
+    try{
+      if(d.async)wallpaper();else{const[b,n]=d.mk();save(b,n)}
+      toast("Downloading "+d.t+"…");
+    }catch(e){toast("Download failed. Please try again.")}
+  },"Sign in to download exclusive assets.");
+}
+
+/* ---------- quiz ---------- */
+const QZ=[
+{q:"What do you most want your website to do?",o:[["Share ideas, guides and stories","b","p"],["Sell products or services","s","b"],["Show off my best work","p","s"]]},
+{q:"Which task sounds the most fun?",o:[["Writing a helpful article","b","p"],["Packaging a product people can buy","s","p"],["Designing a polished showcase","p","b"]]},
+{q:"How would you like to earn?",o:[["Affiliate links and ads","b","s"],["Direct sales and checkout","s","b"],["Clients and freelance work","p","s"]]}
+];
+const RES={
+b:{i:"✍️",t:"A content blog",d:"You like teaching and storytelling. A blog builds an audience that trusts you over time.",st:["Platform: WordPress, Ghost or Substack","Start with 5 helpful articles on one topic","Add an email signup on every post"],earn:"Affiliate links first, then ads once traffic grows."},
+s:{i:"🛍️",t:"A small online store",d:"You want to sell. A focused shop with one or two products is the fastest route to revenue.",st:["Platform: Shopify, Gumroad or Lemon Squeezy","Start with one digital product, like a template","Add clear photos and a short FAQ"],earn:"Direct sales, with a free sample to grow your email list."},
+p:{i:"🎨",t:"A portfolio site",d:"You want your work to speak for itself. A portfolio turns your projects into client enquiries.",st:["Platform: Framer, Carrd or GitHub Pages","Show your 4 best projects, each with a short story","Put a contact button at the top"],earn:"Freelance clients and paid commissions."}
+};
+const NAMES={b:"Blog",s:"Store",p:"Portfolio"};
+let ans=[];
+function renderQuiz(){
+  const n=ans.length,box=$("#quizBox");
+  if(n<QZ.length){
+    const q=QZ[n];
+    box.innerHTML=`<small style="color:var(--mut)">Question ${n+1} of ${QZ.length}</small><div class="prog"><i style="width:${n/QZ.length*100}%"></i></div>
+    <h3 style="font-size:1.25rem">${q.q}</h3>${q.o.map((o,i)=>`<button class="opt" data-opt="${i}">${o[0]}</button>`).join("")}
+    ${n?'<button class="link" data-back>← Back</button>':""}`;
+    return;
+  }
+  const sc={b:0,s:0,p:0};
+  ans.forEach((a,i)=>{const o=QZ[i].o[a];sc[o[1]]+=2;sc[o[2]]+=1});
+  const top=Object.keys(sc).sort((a,b)=>sc[b]-sc[a])[0],r=RES[top];
+  box.innerHTML=`<div class="res"><div class="prog"><i style="width:100%"></i></div><div class="ico">${r.i}</div>
+  <h3>Your match: ${r.t} (${Math.round(sc[top]/6*100)}%)</h3><p>${r.d}</p><ul>${r.st.map(s=>`<li>${s}</li>`).join("")}</ul>
+  <p><b>How it earns:</b> ${r.earn}</p>
+  <div class="bars" style="margin:16px 0">${Object.keys(sc).map(k=>`<div class="${k===top?"top":""}">${NAMES[k]}: ${sc[k]}/6<span><i style="width:${sc[k]/6*100}%"></i></span></div>`).join("")}</div>
+  <a class="btn g" href="#monetize">Read the monetization guide</a> <button class="btn ghost" style="color:var(--slate)" data-retake>Retake quiz</button></div>`;
+}
+
+/* ---------- tip jar ---------- */
+let amt=5;
+const jar=()=>lsGet("eh_jar",0);
+function renderJar(){const j=jar();$("#jarBar").style.width=Math.min(100,j)+"%";$("#jarTxt").textContent=`$${j} of $100 goal (simulated)`}
+function setAmt(v){amt=v;$("#tipGo").textContent="Send $"+(v||"…")}
+function openTip(){
+  $("#tipForm").hidden=false;$("#tipOk").hidden=true;$("#tipErr").textContent="";$("#tipC").value="";$("#tipM").value="";
+  $$("#amts button").forEach(b=>b.classList.toggle("on",b.dataset.amt==="5"));setAmt(5);
+  $("#tipGo").disabled=false;openM("mTip");
+}
+$("#amts").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  $$("#amts button").forEach(x=>x.classList.toggle("on",x===b));$("#tipC").value="";setAmt(+b.dataset.amt);
+});
+$("#tipC").addEventListener("input",e=>{
+  const v=parseFloat(e.target.value);$$("#amts button").forEach(x=>x.classList.remove("on"));setAmt(v>0?Math.round(v*100)/100:0);
+});
+$("#tipGo").addEventListener("click",()=>{
+  if(!(amt>=1&&amt<=500)){$("#tipErr").textContent="Enter an amount between $1 and $500.";return}
+  $("#tipErr").textContent="";const b=$("#tipGo");b.disabled=true;b.textContent="Processing…";
+  setTimeout(()=>{
+    lsSet("eh_jar",jar()+amt);renderJar();
+    $("#tipOkTxt").textContent=`Your $${amt} tip went through (simulated, no money moved).`;
+    $("#tipForm").hidden=true;$("#tipOk").hidden=false;
+  },1200);
+});
+
+/* ---------- global click handling ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target,g=s=>t.closest(s);
+  let el;
+  if((el=g("[data-close]"))){closeM();if(user&&pending){const f=pending;pending=null;f()}return}
+  if((el=g("[data-auth]"))){pending=null;showAuth(el.dataset.auth);return}
+  if(g("[data-backin]")){showAuth("in");return}
+  if(g("[data-logout]")){user=null;lsSet("eh_session",null);renderAuth();toast("You're signed out. See you soon!");return}
+  if((el=g("[data-cat]"))){const c=el.dataset.cat;if(c==="★ Saved"&&!user){needAuth(()=>{cat=c;renderTools()},"Sign in to view your saved tools.");return}cat=c;renderTools();return}
+  if((el=g("[data-det]"))){openTool(+el.dataset.det);return}
+  if((el=g("[data-fav]"))){toggleFav(+el.dataset.fav);return}
+  if((el=g("[data-dl]"))){download(el.dataset.dl);return}
+  if((el=g("[data-opt]"))){ans.push(+el.dataset.opt);renderQuiz();return}
+  if(g("[data-back]")){ans.pop();renderQuiz();return}
+  if(g("[data-retake]")){ans=[];renderQuiz();return}
+  if(g("#tipBtn")||g("#tipBtn2")){openTip();return}
+  if(g("#burger")){$("#menu").classList.toggle("open");return}
+  if(g("#menu a"))$("#menu").classList.remove("open");
+});
+
+/* ---------- init ---------- */
+if(user&&!users()[user]){user=null;lsSet("eh_session",null)}
+renderAuth();renderQuiz();renderJar();
+})();
+</script>
+</body>
+</html>
